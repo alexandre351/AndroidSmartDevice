@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">AndroidSmartDevice</string>
+    <string name="lancerScan">Commencer</string>
+    <string name="nomAppli">Android Smart Device</string>
+    <string name="presentation">Cette application vous permet de contrôler des appareils BLE depuis votre smartphone.</string>
+    <string name="bluetooth">bluetooth</string>
+    <string name="scans">Lancer le Scan BLE</string>
+    <string name="scanActivity">Lancer le Scan BLE</string>
+    <string name="demande">Veuillez lancer le Scanner BLE en cliquant sur le bouton ci-dessous</string>
+
+</resources>
