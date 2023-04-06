@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import fr.isen.costanzo.androidsmartdevice.databinding.ScanCellBinding
 
 
-class ScanAdapter(var devices: ArrayList<BluetoothDevice>, var onDeviceClickListener: ( BluetoothDevice)-> Unit ) : RecyclerView.Adapter<ScanAdapter.ScanViewHolder>() {
+class ScanAdapter(var devices: ArrayList<ScanActivity.ble> ) : RecyclerView.Adapter<ScanAdapter.ScanViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScanViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ScanCellBinding.inflate(inflater, parent, false)
@@ -20,9 +20,9 @@ class ScanAdapter(var devices: ArrayList<BluetoothDevice>, var onDeviceClickList
 
     @SuppressLint("MissingPermission")
     override fun onBindViewHolder(holder: ScanViewHolder, position: Int) {
-        holder.DeviceName.text = devices[position].name.toString()
+        holder.DeviceName.text = devices[position].name
         holder.itemView.setOnClickListener{
-            onDeviceClickListener(devices[position])
+
         }
 
     }
@@ -31,17 +31,7 @@ class ScanAdapter(var devices: ArrayList<BluetoothDevice>, var onDeviceClickList
     class ScanViewHolder(binding: ScanCellBinding) : RecyclerView.ViewHolder(binding.root){
         val DeviceName = binding.DeviceName
     }
-fun addDevice(device: BluetoothDevice) {
-    //var shouldAddDevice = true
-    devices.forEachIndexed { index, bluetoothDevice ->
-        if(bluetoothDevice.address == device.address) {
-            devices[index] = device
-            //shouldAddDevice = false
-        } else {
-            devices.add(device)
-        }
-    }
-}
+
 
 }
 

@@ -32,7 +32,6 @@ private const val REQUEST_LOCATION_PERMISSION = 1
 class ScanActivity : AppCompatActivity() {
     private lateinit var binding: ActivityScanBinding
 
-    private var Devices: ArrayList<BLE> = ArrayList()
     private val bluetoothAdapter: BluetoothAdapter by
     lazy(LazyThreadSafetyMode.NONE) {
         val bluetoothManager =
@@ -44,7 +43,7 @@ class ScanActivity : AppCompatActivity() {
     private var mscanning = false
 
 
-    private val leDeviceList = ArrayList<BluetoothDevice>()
+    private val leDeviceList = ArrayList<ble>()
 
     // Stops scanning after 10 seconds.
     private val SCAN_PERIOD: Long = 10000
@@ -59,41 +58,17 @@ class ScanActivity : AppCompatActivity() {
         }
 
     // Device scan callback.
-    private val leScanCallback1: ScanCallback = object : ScanCallback() {
-        override fun onScanResult(callbackType: Int, result: ScanResult) {
-            super.onScanResult(callbackType, result)
-            requestPermissions()
-            var ble = BLE()
-            if (ActivityCompat.checkSelfPermission(
-                    this@ScanActivity,
-                    Manifest.permission.BLUETOOTH_CONNECT
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-
-                return
-            }
-            ble.name = result.device.name
-            ble.address = result.device.address
-            Devices.add(ble)
-        }
-
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityScanBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        var scanning = true
         binding.ScanBar.isVisible = false
         binding.scanList.isVisible = false
         bluetoothAdapter?.bluetoothLeScanner
         binding.scanList.layoutManager = LinearLayoutManager(this)
-        binding.scanList.adapter = ScanAdapter(leDeviceList) {
-            val intent = Intent(this, DeviceActivity::class.java)
-            intent.putExtra("device", it)
-            startActivity(intent)
-        }
+        binding.scanList.adapter = ScanAdapter(leDeviceList)
         scanDeviceWithPermissions()
 
         /*val button = binding.launchBLE
@@ -125,13 +100,13 @@ class ScanActivity : AppCompatActivity() {
         if (!mscanning) {
             handler.postDelayed({
                 mscanning = false
-                bluetoothAdapter.bluetoothLeScanner.stopScan(leScanCallback1)
+                bluetoothAdapter.bluetoothLeScanner.stopScan(leScanCallback)
             }, SCAN_PERIOD)
             mscanning = true
-            bluetoothAdapter.bluetoothLeScanner.startScan(leScanCallback1)
+            bluetoothAdapter.bluetoothLeScanner.startScan(leScanCallback)
         } else {
             mscanning = false
-            bluetoothAdapter.bluetoothLeScanner.stopScan(leScanCallback1)
+            bluetoothAdapter.bluetoothLeScanner.stopScan(leScanCallback)
         }
 
     }
@@ -193,10 +168,7 @@ class ScanActivity : AppCompatActivity() {
     }
 
 
-    class BLE {
-        lateinit var name: String
-        lateinit var address: String
-    }
+
 
     //Fonction scan Bluetooth corrigée
    /* @SuppressLint("MissingPermission")
@@ -230,15 +202,49 @@ class ScanActivity : AppCompatActivity() {
         @SuppressLint("MissingPermission")
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
             super.onScanResult(callbackType, result)
+            var multi = false
+            val newDevice= ble()
             if (result != null) {
-                (binding.scanList.adapter as? ScanAdapter)?.addDevice(result.device)
+                if(result.device.name != null){
+                    if(leDeviceList.isNotEmpty()){
+                        for(i in 0 until leDeviceList.size){
+                            if(leDeviceList[i].name == result.device.name){
+                                multi = true
+                            }
+                        }
+                        if(multi == false){
+                            Log.w(" SCAN ", "Device Name = ${result.device.name}")
+                            if (result != null) {
+                                newDevice.addDevice(result.device.name, result.device.address)
+                            }
+                            leDeviceList.add(newDevice)
+                        }
+                    } else {
+                        Log.w(" SCAN ", "Device Name = ${result.device.name}")
+                        if (result != null) {
+                            newDevice.addDevice(result.device.name, result.device.address)
+                        }
+                        leDeviceList.add(newDevice)
+                    }
+                    binding.scanList.adapter = ScanAdapter(leDeviceList)
+                }
             }
-            binding.scanList.adapter?.notifyDataSetChanged()
+
+            //binding.scanList.adapter?.notifyDataSetChanged()
         }
     }
 
     companion object {
         private val SCAN_PERIOD: Long = 10000
+    }
+
+    class ble{
+        var name : String= ""
+        var address : String= ""
+        fun addDevice(Name: String, Address : String){
+            name=Name
+            address=Address
+        }
     }
 
 }
