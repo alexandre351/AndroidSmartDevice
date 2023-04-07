@@ -1,6 +1,5 @@
 package fr.isen.costanzo.androidsmartdevice
 
-import android.bluetooth.BluetoothAdapter
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,8 +12,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.recyclerview.widget.RecyclerView
 import android.Manifest
 import android.annotation.SuppressLint
-import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothManager
+import android.bluetooth.*
 import android.bluetooth.le.*
 import android.content.*
 import android.os.*
@@ -68,7 +66,12 @@ class ScanActivity : AppCompatActivity() {
         binding.scanList.isVisible = false
         bluetoothAdapter?.bluetoothLeScanner
         binding.scanList.layoutManager = LinearLayoutManager(this)
-        binding.scanList.adapter = ScanAdapter(leDeviceList)
+        binding.scanList.adapter = ScanAdapter(leDeviceList) { name, address ->
+            val intent = Intent(this, DeviceActivity::class.java)
+            intent.putExtra("name", name)
+            intent.putExtra("address", address)
+            startActivity(intent)
+        }
         scanDeviceWithPermissions()
 
         /*val button = binding.launchBLE
@@ -168,26 +171,6 @@ class ScanActivity : AppCompatActivity() {
     }
 
 
-
-
-    //Fonction scan Bluetooth corrigée
-   /* @SuppressLint("MissingPermission")
-    private fun scanBLEDevice() {
-        if (!mscanning) { // Stops scanning after a pre-defined scan period.
-            handler.postDelayed({
-                mscanning = false
-                bluetoothAdapter?.bluetoothLeScanner?.stopScan(leScanCallback)
-                initToggleActions()
-            }, SCAN_PERIOD)
-            mscanning = true
-            bluetoothAdapter?.bluetoothLeScanner?.stopScan(leScanCallback)
-        } else {
-            mscanning = false
-            bluetoothAdapter?.bluetoothLeScanner?.stopScan(leScanCallback)
-        }
-        initToggleActions()
-    }*/
-
     @SuppressLint("MissingPermission")
     override fun onStop() {
         super.onStop()
@@ -203,16 +186,16 @@ class ScanActivity : AppCompatActivity() {
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
             super.onScanResult(callbackType, result)
             var multi = false
-            val newDevice= ble()
+            val newDevice = ble()
             if (result != null) {
-                if(result.device.name != null){
-                    if(leDeviceList.isNotEmpty()){
-                        for(i in 0 until leDeviceList.size){
-                            if(leDeviceList[i].name == result.device.name){
+                if (result.device.name != null) {
+                    if (leDeviceList.isNotEmpty()) {
+                        for (i in 0 until leDeviceList.size) {
+                            if (leDeviceList[i].name == result.device.name) {
                                 multi = true
                             }
                         }
-                        if(multi == false){
+                        if (multi == false) {
                             Log.w(" SCAN ", "Device Name = ${result.device.name}")
                             if (result != null) {
                                 newDevice.addDevice(result.device.name, result.device.address)
@@ -226,7 +209,12 @@ class ScanActivity : AppCompatActivity() {
                         }
                         leDeviceList.add(newDevice)
                     }
-                    binding.scanList.adapter = ScanAdapter(leDeviceList)
+                    binding.scanList.adapter = ScanAdapter(leDeviceList){ name, address ->
+                        val intent = Intent(this@ScanActivity, DeviceActivity::class.java)
+                        intent.putExtra("name", name)
+                        intent.putExtra("address", address)
+                        startActivity(intent)
+                    }
                 }
             }
 
@@ -238,15 +226,16 @@ class ScanActivity : AppCompatActivity() {
         private val SCAN_PERIOD: Long = 10000
     }
 
-    class ble{
-        var name : String= ""
-        var address : String= ""
-        fun addDevice(Name: String, Address : String){
-            name=Name
-            address=Address
+    class ble {
+        var name: String = ""
+        var address: String = ""
+        fun addDevice(Name: String, Address: String) {
+            name = Name
+            address = Address
         }
     }
 
 }
+
 
 

@@ -7,11 +7,11 @@
     tools:context=".DeviceActivity">
 
     <TextView
-        android:id="@+id/detailLoaderTitle"
+        android:id="@+id/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="TextView"
+        android:text="Device"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,13 +24,35 @@
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detailLoaderTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/Title" />
 
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="122dp"
-        android:layout_height="175dp"
-        app:srcCompat="@drawable/redled"
-        tools:layout_editor_absoluteX="4dp"
-        tools:layout_editor_absoluteY="147dp" />
+        android:id="@+id/ledverte"
+        android:layout_width="113dp"
+        android:layout_height="147dp"
+        android:layout_marginTop="200dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ledverte" />
+
+    <ImageView
+        android:id="@+id/ledbleu"
+        android:layout_width="110dp"
+        android:layout_height="147dp"
+        android:layout_marginTop="200dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ledbleu" />
+
+    <ImageView
+        android:id="@+id/ledrouge"
+        android:layout_width="110dp"
+        android:layout_height="145dp"
+        android:layout_marginTop="200dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ledrouge" />
 </androidx.constraintlayout.widget.ConstraintLayout>

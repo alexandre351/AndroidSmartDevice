@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import fr.isen.costanzo.androidsmartdevice.databinding.ScanCellBinding
 
 
-class ScanAdapter(var devices: ArrayList<ScanActivity.ble> ) : RecyclerView.Adapter<ScanAdapter.ScanViewHolder>() {
+class ScanAdapter(var devices: ArrayList<ScanActivity.ble>, val onItemClickListener: (String, String) -> Unit ) : RecyclerView.Adapter<ScanAdapter.ScanViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScanViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ScanCellBinding.inflate(inflater, parent, false)
@@ -22,7 +22,7 @@ class ScanAdapter(var devices: ArrayList<ScanActivity.ble> ) : RecyclerView.Adap
     override fun onBindViewHolder(holder: ScanViewHolder, position: Int) {
         holder.DeviceName.text = devices[position].name
         holder.itemView.setOnClickListener{
-
+            onItemClickListener(devices[position].name, devices[position].address)
         }
 
     }
